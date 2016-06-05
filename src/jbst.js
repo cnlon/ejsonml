@@ -1,11 +1,4 @@
-import installToHtml from './html'
-import installUtils from './utils'
-
-let JsonML = {}
-installToHtml(JsonML, document)
-installUtils(JsonML)
-
-export default JsonML
+import JsonML from './index'
 
 var SHOW = 'jbst:visible'
 var INIT = 'jbst:oninit'
@@ -24,7 +17,6 @@ function ensureMethod (attr, key) {
         method = new Function(String(method))
         /* eslint-enable no-new-func */
       } catch (ex) {
-        debugger
         // filter
         method = null
       }
@@ -115,32 +107,28 @@ function callContext (
 
 var appendChild = JsonML.appendChild
 
-
-
-
-class JBST {
-  constructor (jbst) {
-    if (typeof jbst === 'undefined') {
-      throw new Error('JBST tree is undefined')
-    }
-    this.jbst = jbst
+/* ctor */
+export default function JBST (jbst) {
+  if (typeof jbst === 'undefined') {
+    throw new Error('JBST tree is undefined')
   }
-  // recursively applies dataBind to all nodes of the template graph
-  // NOTE: it is very important to replace each node with a copy,
-  // otherwise it destroys the original template.
-  // node: current template node being data bound
-  // data: current data item being bound
-  // index: index of current data item
-  // count: count of current set of data items
-  // args: state object
-  // returns: JsonML nodes
-  _dataBind (node, data, index, count, args) {
+  var self = this
+// recursively applies dataBind to all nodes of the template graph
+// NOTE: it is very important to replace each node with a copy,
+// otherwise it destroys the original template.
+// node: current template node being data bound
+// data: current data item being bound
+// index: index of current data item
+// count: count of current set of data items
+// args: state object
+// returns: JsonML nodes
+  function dataBind (node, data, index, count, args) {
     try {
       // recursively process each node
       if (node) {
         var output
         if (typeof node === 'function') {
-          output = callContext(this, data, index, count, args, node)
+          output = callContext(self, data, index, count, args, node)
           if (output instanceof JBST) {
             // allow returned JBSTs to recursively bind
             // useful for creating 'switcher' template methods
@@ -154,13 +142,13 @@ class JBST {
           var onBound = (typeof JsonML.BST.onbound === 'function') && JsonML.BST.onbound
           var onAppend = (typeof JsonML.BST.onappend === 'function') && JsonML.BST.onappend
           var appendCB = onAppend && function (parent, child) {
-            callContext(this, data, index, count, args, onAppend, [parent, child])
+            callContext(self, data, index, count, args, onAppend, [parent, child])
           }
 
           // JsonML output
           output = []
           for (var i = 0; i < node.length; i++) {
-            var child = this._dataBind(node[i], data, index, count, args)
+            var child = dataBind(node[i], data, index, count, args)
             appendChild(output, child, appendCB)
             if (!i && !output[0]) {
               onAppend = appendCB = null
@@ -168,7 +156,7 @@ class JBST {
           }
 
           if (output[0] && onBound) {
-            callContext(this, data, index, count, args, onBound, [output])
+            callContext(self, data, index, count, args, onBound, [output])
           }
 
           // if output has attributes, check for JBST commands
@@ -202,7 +190,7 @@ class JBST {
           for (var property in node) {
             if (node.hasOwnProperty(property)) {
               // evaluate property's value
-              var value = this._dataBind(node[property], data, index, count, args)
+              var value = dataBind(node[property], data, index, count, args)
               if (typeof value !== 'undefined' && value !== null) {
                 output[property] = value
               }
@@ -216,58 +204,56 @@ class JBST {
       // rest are simple value types, so return node directly
       return node
     } catch (ex) {
-      debugger
       try {
         // handle error with complete context
         var err = (typeof JsonML.BST.onerror === 'function') ? JsonML.BST.onerror : onError
-        return callContext(this, data, index, count, args, err, [ex])
+        return callContext(self, data, index, count, args, err, [ex])
       } catch (ex2) {
-        debugger
         return '[' + ex2 + ']'
       }
     }
   }
 
-  _iterate (node, data, index, count, args) {
+  function iterate (node, data, index, count, args) {
     if (data instanceof Array) {
       // create a document fragment to hold list
       var output = ['']
       count = data.length
       for (var i = 0; i < count; i++) {
         // apply template to each item in array
-        appendChild(output, this._dataBind(this.jbst, data[i], i, count, args))
+        appendChild(output, dataBind(jbst, data[i], i, count, args))
       }
       // document fragment
       return output
     } else {
       // data is singular so apply template once
-      return this._dataBind(this.jbst, data, index, count, args)
+      return dataBind(jbst, data, index, count, args)
     }
   }
 
   // the publicly exposed instance methods
 
   // combines JBST and JSON to produce JsonML
-  dataBind (data, index, count, args) {
+  self.dataBind = function (data, index, count, args) {
     // data is singular so apply template once
-    return this._iterate(this.jbst, data, index, count, args)
+    return iterate(jbst, data, index, count, args)
   }
 
   /* JBST + JSON => JsonML => DOM */
-  bind (data, index, count, args) {
+  self.bind = function (data, index, count, args) {
     // databind JSON data to a JBST template, resulting in a JsonML representation
-    var jml = this._iterate(this.jbst, data, index, count, args)
+    var jml = iterate(jbst, data, index, count, args)
     // hydrate the resulting JsonML, executing callbacks, and user-filter
     return JsonML.toHTML(jml, filter)
   }
 
   // replaces a DOM element with result from binding
-  replace (elem, data, index, count, args) {
+  self.replace = function (elem, data, index, count, args) {
     if (typeof elem === 'string') {
       elem = document.getElementById(elem)
     }
     if (elem && elem.parentNode) {
-      var jml = this.bind(data, index, count, args)
+      var jml = self.bind(data, index, count, args)
       if (jml) {
         elem.parentNode.replaceChild(jml, elem)
       }
@@ -275,14 +261,14 @@ class JBST {
   }
 
   // displace a DOM element with result from binding JsonML+BST node bound within this context
-  displace (elem, node, data, ndex, count, args) {
+  self.displace = function (elem, node, data, ndex, count, args) {
     if (typeof elem === 'string') {
       elem = document.getElementById(elem)
     }
 
     if (elem && elem.parentNode) {
       // databind JSON data to a JBST template, resulting in a JsonML representation
-      var jml = this._iterate(node, data, undefined, count, args)
+      var jml = iterate(node, data, index, count, args)
 
       // hydrate the resulting JsonML, executing callbacks, and user-filter
       jml = JsonML.toHTML(jml, filter)
@@ -293,34 +279,14 @@ class JBST {
   }
 
   // patches a DOM element with JsonML+BST node bound within this context
-  patch (elem, node, data, index, count, args) {
+  self.patch = function (elem, node, data, index, count, args) {
     if (typeof elem === 'string') {
       elem = document.getElementById(elem)
     }
     if (elem) {
       var jml = ['']
-      appendChild(jml, this._dataBind(node, data, index, count, args))
+      appendChild(jml, dataBind(node, data, index, count, args))
       JsonML.patch(elem, jml, filter)
     }
   }
 }
-
-
-
-
-
-/* factory method */
-JsonML.BST = function (jbst) {
-  return (jbst instanceof JBST) ? jbst : new JBST(jbst)
-}
-/* override to perform default filtering of the resulting DOM tree */
-JsonML.BST.filter = null
-
-/* override to perform custom error handling during binding */
-JsonML.BST.onerror = null
-
-/* override to perform custom processing of each element after adding to parent */
-JsonML.BST.onappend = null
-
-/* override to perform custom processing of each element after binding */
-JsonML.BST.onbound = null
