@@ -1,4 +1,4 @@
-**Still in development**
+<i>Still in development</i>
 
 # eJsonML
 
