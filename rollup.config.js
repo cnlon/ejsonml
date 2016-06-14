@@ -1,17 +1,19 @@
 import babel from 'rollup-plugin-babel'
 import uglify from 'rollup-plugin-uglify'
 
-const name = 'ejsonml'
+const name = 'ejsonml-render'
+const fileName = 'ejsonml.render'
+const moduleName = 'ejsonml_render'
 const needMin = !!process.env.MIN
 
-var dest = 'dist/' + name + '.js'
+var dest = 'dist/' + fileName + '.js'
 var plugins = [
   babel({
     presets: [ 'es2015-rollup' ],
   }),
 ]
 if (needMin) {
-  dest = 'dist/' + name + '.min.js'
+  dest = 'dist/' + fileName + '.min.js'
   plugins.push(uglify({
     output: {
       comments: function (node, comment) {
@@ -28,8 +30,8 @@ if (needMin) {
 export default {
   entry: 'src/index.js',
   format: 'umd',
-  moduleId: name,
-  moduleName: name,
+  moduleId: moduleName,
+  moduleName: moduleName,
   dest,
   plugins,
   banner:

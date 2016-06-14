@@ -11,9 +11,13 @@ var config = {
   module: {
     loaders: [
       {
-        test: /\.js?$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel',
+      },
+      {
+        test: /\.json$/,
+        loader: 'json',
       },
     ],
   },
@@ -23,7 +27,8 @@ var config = {
   devtool: 'eval',
   resolve: {
     alias: {
-      'src': path.resolve(__dirname, '../src/index.js'),
+      'ejsonml-render': path.resolve(__dirname, '../src/'),
+      'ejsonml-parser': path.resolve(__dirname, '../../ejsonml-parser/lib/'),
     },
   },
 }
