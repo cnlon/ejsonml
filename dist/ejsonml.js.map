@@ -1,1 +1,0 @@
-{"version":3,"file":"ejsonml.js","sources":["../src/index.js"],"sourcesContent":["// @flow\nexport default function init () {\n  return 'pass'\n}\n"],"names":[],"mappings":";;;;;;;;;;;;AACA,EAAe,SAAS,IAAT,GAAiB;AAC9B,EAAA,SAAO,MAAP;AACD,EAAA;;;;"}
