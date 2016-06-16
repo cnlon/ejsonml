@@ -3,20 +3,17 @@ import render from 'ejsonml-render'
 
 window.onload = function () {
   const tpl =
-  `
-  <div>
-  <h1 *if="arr.length>=2" :text="_.title"></h1>
-  <p class="claz1" :class="'claz2'" style="background: lightgreen;" :style="styl">
-    <input :value="name" @keypress="keep($event)" @click="alert(name, $event)"/>
+`
+<div>
+  <h1 :text="_.title"></h1>
+  <p  *if="arr.length" *for="d in arr" class="claz1" :class="'claz2'" style="background: lightgreen;" :style="styl">
+    <input :value="d + name" @keypress="keep($event)" @click="alert(name, $event)"/>
   </p>
-  </div>
-  `
+</div>
+`
   document.getElementById('tpl').textContent = tpl
 
   const parser = new Parser(tpl)
-  // const ejml = parser.ejml
-  // document.getElementById('ejml').textContent = JSON.stringify(ejml, null, 2)
-
   const hjson = parser.parse()
   document.getElementById('hjson').textContent = JSON.stringify(hjson, null, 2)
 

@@ -70,13 +70,13 @@ function computedAttributes (attributes, scope, global, subScope, callback) {
     $if = render.eval($if, scope, global, subScope)
     if (!$if) return
   }
-  let $items = attributes['*items']
+  let $items = attributes['*for']
   if ($items) {
     $items = render.eval($items, scope, global, subScope)
     let sub = subScope
              ? Object.assign({}, subScope)
              : {}
-    let subKey = attributes['*for'] || '$item'
+    let subKey = attributes['_forKey']
     ;($items || []).forEach((v, k) => {
       sub[subKey] = v
       sub.$index = k
