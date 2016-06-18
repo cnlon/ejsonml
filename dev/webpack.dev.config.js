@@ -11,9 +11,17 @@ var config = {
   module: {
     loaders: [
       {
-        test: /\.js?$/,
+        test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel',
+      },
+      {
+        test: /\.json$/,
+        loader: 'json',
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css',
       },
     ],
   },
@@ -21,11 +29,6 @@ var config = {
     presets: [ 'es2015' ],
   },
   devtool: 'eval',
-  resolve: {
-    alias: {
-      'src': path.resolve(__dirname, '../src/index.js'),
-    },
-  },
 }
 
 module.exports = config

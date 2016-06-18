@@ -1,0 +1,29 @@
+.demo {
+  width: 80%;
+  max-width: 400px;
+  margin: 50vh auto 0;
+  transform: translateY(-50%);
+}
+.demo-item {
+  position: relative;
+  padding: 15px;
+  background-color: lightgray;
+  counter-increment: c;
+}
+.demo-item+.demo-item {
+  margin-top: 30px;
+}
+.demo-item::before {
+  content: "demo "counter(c);
+  position: absolute;
+  top: -15px;
+  left: -20px;
+}
+
+.demo-grid:nth-child(odd) {
+  background-color: lightblue;
+}
+
+.demo-grid:nth-child(even) {
+  background-color: lightgreen;
+}
