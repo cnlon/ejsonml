@@ -2,10 +2,10 @@
   "name": "ejsonml",
   "version": "0.0.1",
   "description": "JsonML with expression",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "$(npm bin)/mocha",
-    "lint": "$(npm bin)/eslint src/**",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "$(npm bin)/eslint render/**",
     "dev": "$(npm bin)/webpack-dev-server --config dev/webpack.dev.config.js --content-base dev/ --inline --hot --port 3035",
     "build": "rm -rf dist/* && npm run rollup && MIN=min npm run rollup",
     "rollup": "$(npm bin)/rollup --config --environment NODE_ENV:production --sourcemap"

@@ -1,4 +1,4 @@
-import render from 'ejsonml-render'
+import render from 'ejsonml'
 
 import '../css/demo.css'
 import template from '../templates/demo'
