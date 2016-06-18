@@ -26,7 +26,7 @@ if (needMin) {
 }
 
 export default {
-  entry: 'src/index.js',
+  entry: 'render/index.js',
   format: 'umd',
   moduleId: name,
   moduleName: name,

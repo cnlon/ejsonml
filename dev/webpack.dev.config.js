@@ -29,6 +29,11 @@ var config = {
     presets: [ 'es2015' ],
   },
   devtool: 'eval',
+  resolve: {
+    alias: {
+      'ejsonml': path.resolve(__dirname, '../render/'),
+    },
+  },
 }
 
 module.exports = config
