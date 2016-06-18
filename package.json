@@ -1,6 +1,6 @@
 {
   "name": "ejsonml",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "JsonML with expression",
   "main": "render/index.js",
   "scripts": {
