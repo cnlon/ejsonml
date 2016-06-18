@@ -105,12 +105,12 @@
       $if = render.eval($if, scope, global, subScope);
       if (!$if) return;
     }
-    var $items = attributes['*items'];
+    var $items = attributes['*for'];
     if ($items) {
       (function () {
         $items = render.eval($items, scope, global, subScope);
         var sub = subScope ? Object.assign({}, subScope) : {};
-        var subKey = attributes['*for'] || '$item';($items || []).forEach(function (v, k) {
+        var subKey = attributes['_forKey'];($items || []).forEach(function (v, k) {
           sub[subKey] = v;
           sub.$index = k;
           callback(sub);

@@ -1,12 +1,10 @@
 <i>Still in development</i>
 
-# eJsonML
+# ejsonml-render
 
-[JsonML](http://www.jsonml.org/) with expression
+Render the template of [eJsonML](https://github.com/longhaohe/ejsonml)
 
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
-
-##
 
 ## License
 
