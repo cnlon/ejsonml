@@ -1,7 +1,7 @@
 import render from 'ejsonml'
 
 import '../css/demo.css'
-import template from '../templates/demo'
+import template from '../tpl/demo'
 
 const scope = {
   arr: ['This is first paragraph', 'This is second paragraph'],

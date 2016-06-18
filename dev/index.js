@@ -1,4 +1,4 @@
-import demo from './modules/demo'
+import demo from './js/demo'
 
 window.onload = function () {
   document.getElementById('dom').appendChild(demo)
