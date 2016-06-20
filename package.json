@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "$(npm bin)/eslint render/**",
     "dev": "$(npm bin)/webpack-dev-server --config dev/webpack.dev.config.js --content-base dev/ --inline --hot --port 3035",
+    "watch": "cd dev && node ../parser/bin.js -c",
     "build": "rm -rf dist/* && npm run rollup && MIN=min npm run rollup",
     "rollup": "$(npm bin)/rollup --config --environment NODE_ENV:production --sourcemap"
   },
