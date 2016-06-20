@@ -7,6 +7,7 @@ const scope = {
   arr: ['This is first paragraph', 'This is second paragraph'],
   styl: 'font-size: 32px; color: red',
   claz: 'demo-grid',
+  title: 'This is title',
   name: 'world',
   hello (event) {
     let target = event.target
@@ -16,9 +17,6 @@ const scope = {
     output.innerText += '\n' + text
   },
 }
-const global = {
-  title: 'This is title',
-}
-const dom = render(template, scope, global)
+const dom = render(template, scope)
 
 export default dom

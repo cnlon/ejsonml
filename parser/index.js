@@ -12,7 +12,7 @@ function parse (config) {
 
 function toJs (hjson) {
   return 'module.exports='
-    + hjson.replace(/(,|:|\[)"(function\(\$,_,_\$\){return .+?})"(,|]|})/g, '$1$2$3')
+    + hjson.replace(/(,|:|\[)"(function\(\$,_\){return .+?})"(,|]|})/g, '$1$2$3')
     + ';'
 }
 
