@@ -22,7 +22,19 @@
 
   babelHelpers;
 
-  function render(ejml, scope, global, subScope) {
+  function render(ejml, scope) {
+    return $render(ejml, scope, {});
+  }
+
+  render.eval = function evaluate(func, scope, subScope) {
+    try {
+      return func(scope, subScope);
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  function $render(ejml, scope, subScope) {
     var res = void 0;
     if (!ejml) {
       res = '';
@@ -37,13 +49,13 @@
 
         if (node === '*') {
           node = createFragment(node);
-          computedAttributes(attributes, scope, global, subScope, function (sub) {
-            appendChildren(node, children, scope, global, sub);
+          computedAttributes(attributes, scope, subScope, function (sub) {
+            appendChildren(node, children, scope, sub);
           });
         } else {
           node = createNode(node);
-          setAttributes(node, attributes, scope, global, subScope);
-          appendChildren(node, children, scope, global, subScope);
+          setAttributes(node, attributes, scope, subScope);
+          appendChildren(node, children, scope, subScope);
         }
         return {
           v: node
@@ -52,34 +64,20 @@
 
       if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
     } else if (typeof ejml === 'function') {
-      res = render.eval(ejml, scope, global, subScope);
+      res = render.eval(ejml, scope, subScope);
     } else {
       res = ejml;
     }
     return createTextNode(res);
   }
 
-  render.eval = function evaluate(func, scope, global, subScope) {
-    try {
-      return func(scope, global, subScope || {});
-    } catch (err) {
-      return undefined;
-    }
-  };
-
-  function createNode(tagName) {
-    return document.createElement(tagName);
+  function appendChildren(node, children, scope, subScope) {
+    children.forEach(function (child) {
+      node.appendChild($render(child, scope, subScope));
+    });
   }
 
-  function createTextNode(text) {
-    return document.createTextNode(text);
-  }
-
-  function createFragment() {
-    return document.createDocumentFragment();
-  }
-
-  function setAttributes(node, attributes, scope, global, subScope) {
+  function setAttributes(node, attributes, scope, subScope) {
     var attr = void 0,
         val = void 0;
     Object.keys(attributes).forEach(function (key) {
@@ -88,13 +86,13 @@
         subScope = subScope || {};
         node.addEventListener(key.slice(1), function (event) {
           subScope.$event = event;
-          render.eval(attributes[key], scope, global, subScope);
+          render.eval(attributes[key], scope, subScope);
         });
       } else {
-        attr = document.createAttribute(key);
+        attr = createAttribute(key);
         val = attributes[key];
         if (typeof val === 'function') {
-          val = render.eval(val, scope, global, subScope);
+          val = render.eval(val, scope, subScope);
         }
         attr.nodeValue = val;
         node.setAttributeNode(attr);
@@ -102,32 +100,47 @@
     });
   }
 
-  function computedAttributes(attributes, scope, global, subScope, callback) {
+  function computedAttributes(attributes, scope, subScope, callback) {
     var $if = attributes['*if'];
     if ($if) {
-      $if = render.eval($if, scope, global, subScope);
+      $if = render.eval($if, scope, subScope);
       if (!$if) return;
     }
     var $items = attributes['*for'];
     if ($items) {
-      (function () {
-        $items = render.eval($items, scope, global, subScope);
-        var sub = subScope ? Object.assign({}, subScope) : {};
-        var subKey = attributes['_forKey'];($items || []).forEach(function (v, k) {
-          sub[subKey] = v;
-          sub.$index = k;
-          callback(sub);
-        });
-      })();
+      $items = render.eval($items, scope, subScope);
+      if ($items && $items.length) {
+        (function () {
+          var sub = subScope ? Object.assign({}, subScope) : {};
+          var subKey = attributes['_forKey'];
+          $items.forEach(function (v, k) {
+            sub[subKey] = v;
+            sub.$index = k;
+            callback(sub);
+          });
+        })();
+      }
     } else {
-      callback(scope, global, subScope);
+      callback(scope, subScope);
     }
   }
 
-  function appendChildren(node, children, scope, global, subScope) {
-    children.forEach(function (child) {
-      node.appendChild(render(child, scope, global, subScope));
-    });
+  var doc = window.document;
+
+  function createNode(tagName) {
+    return doc.createElement(tagName);
+  }
+
+  function createTextNode(text) {
+    return doc.createTextNode(text);
+  }
+
+  function createFragment() {
+    return doc.createDocumentFragment();
+  }
+
+  function createAttribute(attribute) {
+    return doc.createAttribute(attribute);
   }
 
   return render;
