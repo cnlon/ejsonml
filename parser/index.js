@@ -1,6 +1,20 @@
 const fs = require('fs')
 const Parser = require('ejsonml-parser')
+const EjmlParser = require('ejsonml-parser-javascript')
 
+let jml
+const parser = new Parser()
+const ejmlParser = new EjmlParser({
+  callback (j) {
+    jml = j
+  },
+})
+parser.install(ejmlParser)
+
+const formatPrefix = {
+  'es6': 'export default ',
+  'cjs': 'module.exports=',
+}
 const templateRE = /\.html*$/i
 function parse (config) {
   if (config.watch) {
@@ -35,22 +49,18 @@ function parseFile (filename, config) {
   let output = filename.replace(templateRE, '.js')
   output = config.output + '/' + output
   filename = config.template + '/' + filename
-  hjsonParse(filename, output)
+  let prefix = formatPrefix[config.format || 'es6']
+  jmlParse(filename, output, prefix)
 }
 
-function hjsonParse (input, output) {
+function jmlParse (input, output, prefix) {
   const template = fs.readFileSync(input, 'utf8')
-  const parser = new Parser(template)
-  let hjson = parser.parse()
-  hjson = JSON.stringify(hjson)
-  hjson = toJs(hjson)
-  fs.writeFileSync(output, hjson)
+  parser.parse(template)
+  saveJml(prefix + jml, output)
 }
 
-function toJs (hjson) {
-  return 'module.exports='
-    + hjson.replace(/(,|:|\[)"(function\(\$,_\){return .+?})"(,|]|})/g, '$1$2$3')
-    + ';'
+function saveJml (jml, output) {
+  fs.writeFileSync(output, jml)
 }
 
 module.exports = parse

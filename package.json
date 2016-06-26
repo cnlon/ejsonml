@@ -50,7 +50,8 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
-    "ejsonml-parser": "0.0.4",
-    "ejsonml-render": "0.0.3"
+    "ejsonml-parser": "^0.0.5",
+    "ejsonml-parser-javascript": "^0.0.3",
+    "ejsonml-render": "^0.0.4"
   }
 }

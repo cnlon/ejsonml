@@ -1,5 +1,6 @@
 module.exports = {
   template: './tpl',
-  output: './hs',
+  output: './jml',
+  format: 'es6',
   watch: true,
 }

@@ -7,6 +7,8 @@ const PARAM_PROP = {
   '--output': 'output',
   '-c': 'config',
   '--config': 'config',
+  '-f': 'format',
+  '--format': 'format',
   '-w': 'watch',
   '--watch': 'watch',
 }
