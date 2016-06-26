@@ -16,11 +16,53 @@
     return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
-  babelHelpers.toArray = function (arr) {
-    return Array.isArray(arr) ? arr : Array.from(arr);
-  };
+  babelHelpers.slicedToArray = function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"]) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+      }
+    };
+  }();
 
   babelHelpers;
+
+  var values = {
+    text: 'textContent',
+    textContent: 'textContent',
+    innerText: 'innerText',
+    html: 'innerHTML',
+    innerHTML: 'innerHTML'
+  };
 
   function render(ejml, scope) {
     return $render(ejml, scope, {});
@@ -40,22 +82,21 @@
       res = '';
     } else if (Array.isArray(ejml)) {
       var _ret = function () {
-        var _ejml = babelHelpers.toArray(ejml);
+        var _ejml = babelHelpers.slicedToArray(ejml, 3);
 
         var node = _ejml[0];
         var attributes = _ejml[1];
+        var children = _ejml[2];
 
-        var children = _ejml.slice(2);
-
-        if (node === '*') {
+        if (node === 'template') {
           node = createFragment(node);
-          computedAttributes(attributes, scope, subScope, function (sub) {
-            appendChildren(node, children, scope, sub);
+          attributes && computedAttributes(attributes, scope, subScope, function (sub) {
+            children && appendChildren(node, children, scope, sub);
           });
         } else {
           node = createNode(node);
-          setAttributes(node, attributes, scope, subScope);
-          appendChildren(node, children, scope, subScope);
+          attributes && setAttributes(node, attributes, scope, subScope);
+          children && appendChildren(node, children, scope, subScope);
         }
         return {
           v: node
@@ -79,23 +120,32 @@
 
   function setAttributes(node, attributes, scope, subScope) {
     var attr = void 0,
+        prop = void 0,
         val = void 0;
     Object.keys(attributes).forEach(function (key) {
       if (key[0] === '@') {
         // event
-        subScope = subScope || {};
         node.addEventListener(key.slice(1), function (event) {
           subScope.$event = event;
           render.eval(attributes[key], scope, subScope);
         });
       } else {
-        attr = createAttribute(key);
-        val = attributes[key];
-        if (typeof val === 'function') {
-          val = render.eval(val, scope, subScope);
+        prop = values[key];
+        if (prop) {
+          val = attributes[key];
+          if (typeof val === 'function') {
+            val = render.eval(val, scope, subScope);
+          }
+          node[prop] = val;
+        } else {
+          attr = createAttribute(key);
+          val = attributes[key];
+          if (typeof val === 'function') {
+            val = render.eval(val, scope, subScope);
+          }
+          attr.nodeValue = val;
+          node.setAttributeNode(attr);
         }
-        attr.nodeValue = val;
-        node.setAttributeNode(attr);
       }
     });
   }
