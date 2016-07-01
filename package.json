@@ -2,10 +2,10 @@
   "name": "ejsonml",
   "version": "0.0.4",
   "description": "JsonML with expression",
-  "main": "dist/index.js",
+  "main": "dist/ejsonml.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "$(npm bin)/eslint render/**",
+    "lint": "$(npm bin)/eslint render/** parser/**",
     "dev": "$(npm bin)/webpack-dev-server --config dev/webpack.dev.config.js --content-base dev/ --inline --hot --port 3035",
     "watch": "cd dev && node ../parser/bin.js -c",
     "build": "rm -rf dist/* && npm run rollup && MIN=min npm run rollup",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/longhaohe/ejsonml.git"
+    "url": "git+https://github.com/lon3/ejsonml.git"
   },
   "keywords": [
     "jsonml",
@@ -26,9 +26,9 @@
   "author": "longhao he <longhaohe@gmail.com> (http://longhaohe.com/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/longhaohe/ejsonml/issues"
+    "url": "https://github.com/lon3/ejsonml/issues"
   },
-  "homepage": "https://github.com/longhaohe/ejsonml#readme",
+  "homepage": "https://github.com/lon3/ejsonml#readme",
   "devDependencies": {
     "babel-core": "^6.9.0",
     "babel-loader": "^6.2.4",

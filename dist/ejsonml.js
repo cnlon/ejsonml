@@ -1,6 +1,6 @@
 /**
  * ejsonml --- By longhao <longhaohe@gmail.com> (http://longhaohe.com/)
- * Github: https://github.com/longhaohe/ejsonml
+ * Github: https://github.com/lon3/ejsonml
  * MIT Licensed.
  */
 (function (global, factory) {
@@ -9,14 +9,13 @@
   (global.ejsonml = factory());
 }(this, function () { 'use strict';
 
-  var babelHelpers = {};
-  babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
     return typeof obj;
   } : function (obj) {
     return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
-  babelHelpers.slicedToArray = function () {
+  var slicedToArray = function () {
     function sliceIterator(arr, i) {
       var _arr = [];
       var _n = true;
@@ -54,8 +53,6 @@
     };
   }();
 
-  babelHelpers;
-
   var values = {
     text: 'textContent',
     textContent: 'textContent',
@@ -82,7 +79,7 @@
       res = '';
     } else if (Array.isArray(ejml)) {
       var _ret = function () {
-        var _ejml = babelHelpers.slicedToArray(ejml, 3);
+        var _ejml = slicedToArray(ejml, 3);
 
         var node = _ejml[0];
         var attributes = _ejml[1];
@@ -103,7 +100,7 @@
         };
       }();
 
-      if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
+      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
     } else if (typeof ejml === 'function') {
       res = render.eval(ejml, scope, subScope);
     } else {
