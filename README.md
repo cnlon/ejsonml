@@ -1,4 +1,4 @@
-<i>Still in development</i>
+⚠️ <em>Still in development</em>
 
 # eJsonML
 
@@ -16,6 +16,4 @@ npm run watch
 
 ## License
 
-[MIT](http://opensource.org/licenses/MIT)
-
-Copyright (c) 2016 longhao
+[MIT](https://github.com/cnlon/ejsonml/blob/master/LICENSE)

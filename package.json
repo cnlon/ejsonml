@@ -5,53 +5,57 @@
   "main": "dist/ejsonml.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "$(npm bin)/eslint render/** parser/**",
+    "lint": "$(npm bin)/eslint render parser",
+    "clean": "rm -rf dist/",
     "dev": "$(npm bin)/webpack-dev-server --config dev/webpack.dev.config.js --content-base dev/ --inline --hot --port 3035",
     "watch": "cd dev && node ../parser/bin.js -c",
-    "build": "rm -rf dist/* && npm run rollup && MIN=min npm run rollup",
+    "prebuild": "npm run clean",
+    "build": "npm run rollup && MIN=min npm run rollup",
     "rollup": "$(npm bin)/rollup --config --environment NODE_ENV:production --sourcemap"
   },
   "bin": {
     "ejsonml": "parser/bin.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lon3/ejsonml.git"
-  },
-  "keywords": [
-    "jsonml",
-    "expression",
-    "ejsonml"
-  ],
-  "author": "longhao he <longhaohe@gmail.com> (http://longhaohe.com/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/lon3/ejsonml/issues"
-  },
-  "homepage": "https://github.com/lon3/ejsonml#readme",
-  "devDependencies": {
-    "babel-core": "^6.9.0",
-    "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "chai": "^3.5.0",
-    "css-loader": "^0.23.1",
-    "eslint": "^2.10.2",
-    "eslint-config-standard": "^5.3.1",
-    "eslint-plugin-promise": "^1.3.0",
-    "eslint-plugin-standard": "^1.3.2",
-    "json-loader": "^0.5.4",
-    "mocha": "^2.5.3",
-    "rollup": "^0.26.3",
-    "rollup-plugin-babel": "^2.4.0",
-    "rollup-plugin-uglify": "^0.3.1",
-    "style-loader": "^0.13.1",
-    "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.14.1"
-  },
   "dependencies": {
     "ejsonml-parser": "^0.0.5",
     "ejsonml-parser-javascript": "^0.0.3",
     "ejsonml-render": "^0.0.4"
-  }
+  },
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^7.1.0",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-es2015-rollup": "^1.2.0",
+    "chai": "^3.5.0",
+    "css-loader": "^0.25.0",
+    "eslint": "^3.10.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.3.2",
+    "eslint-plugin-standard": "^2.0.1",
+    "json-loader": "^0.5.4",
+    "mocha": "^3.1.2",
+    "rollup": "^0.36.3",
+    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-uglify": "^1.0.1",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "keywords": [
+    "jsonml",
+    "expression",
+    "hyperscript",
+    "jsx"
+  ],
+  "author": "lon <longhaohe@gmail.com> (https://github.com/cnlon)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnlon/ejsonml.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cnlon/ejsonml/issues"
+  },
+  "homepage": "https://github.com/cnlon/ejsonml#readme",
+  "license": "MIT"
 }
